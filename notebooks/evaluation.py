@@ -14,38 +14,32 @@ def prepare_data(review_data):
     return collection, qrels
 
 
-def mean_average_precision_for_query(
-        rankings: dict[str, float], qrels: dict[str, int]
-) -> float:
-    """calculates the mean average precision for a given query.
+def average_precision_for_query(rankings: dict[str, float], qrels: dict[str, int]) -> float:
+    """Calculates the average precision for a given query.
     :param rankings: a dictionary of document ids and their corresponding scores
     :param qrels: a dictionary of document ids and their corresponding relevance labels
     :return: mean average precision for a given query
     """
     average_precision = 0
-    tp, fp, tn, fn = 0, 0, 0, 0
+    tp, fp = 0, 0
 
     relevant_docs = sum(qrels.values())
-    total_docs = len(qrels)
-    non_relevant_docs = total_docs - relevant_docs
 
     for rank, (doc_id, _) in enumerate(rankings.items()):
         if qrels.get(doc_id, 0) == 1:  # Document is relevant
             tp += 1
+            precision = tp / (tp + fp)
+            average_precision += precision
         else:
             fp += 1
 
-        precision = tp / (tp + fp)
-
-        average_precision += precision * qrels.get(doc_id, 0)
-
-    return average_precision / total_docs
+    return average_precision / relevant_docs if relevant_docs > 0 else 0
 
 
 def n_precision_at_recall_for_query(
         rankings: dict[str, float], qrels: dict[str, int], recall_level: float = 0.95
 ) -> float:
-    n_precision = 0
+    n_precision = None
     tp, fp, tn, fn = 0, 0, 0, 0
 
     relevant_docs = sum(qrels.values())
@@ -62,9 +56,6 @@ def n_precision_at_recall_for_query(
 
         if recall >= recall_level:
             tn = non_relevant_docs - fp
-            fn = relevant_docs - tp
-            # E = FP + TN
-            # n_precision = (TP * TN) / (E * (TP + FP)) if (E * (TP + FP)) != 0 else 0
             n_precision = (tp * tn) / ((fp + tn) * (tp + fp))
             break
 
