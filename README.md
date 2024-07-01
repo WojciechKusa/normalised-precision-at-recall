@@ -1,6 +1,10 @@
-# normalised-precision-at-recall
+# normalised Precision at Recall
 
-Experiments with normalised Precision at fixed Recall rate
+Experiments with normalised Precision at fixed Recall.
+
+This package serves as basis for the paper: _"Normalised Precision at Fixed Recall for Evaluating TAR"_ by Wojciech Kusa, Georgios Peikos, Moritz Staudinger, Aldo Lipani, Allan Hanbury
+
+[![https://openreview.net/forum?id=GJpkvHMd7H](http://img.shields.io/badge/ICTIR_2024-normalisedPrecision@R-404c72.svg)](https://openreview.net/forum?id=GJpkvHMd7H) 
 
 
 Project Organization
